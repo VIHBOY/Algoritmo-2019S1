@@ -9,16 +9,14 @@ using namespace std;
 #include <cstdlib>
 #include <iterator>
 #include <sstream>
-class Graph
-{
+class Graph{
     int V;
     list<int> *adj;
-    void bridgeUtil(int v, bool visited[], int disc[], int low[],
-                    int parent[],std::map<int,int> &NodexNode);
+    void bridgeUtil(int v, bool visited[], int disc[], int low[],int parent[],std::map<int,int> &NodexNode, fstream &salida);
 public:
     Graph(int V);
     void addEdge(int v, int w);
-    void bridge(std::map<int,int> &NodexNode);
+    void bridge(std::map<int,int> &NodexNode,fstream &salida);
     void print();
     void Deletet();
 };
@@ -42,8 +40,7 @@ void Graph::addEdge(int v, int w){
 void Graph::Deletet(){
   delete[] this->adj;
 }
-void Graph::bridgeUtil(int u, bool visited[], int disc[],
-                                  int low[], int parent[],std::map<int,int> &NodexNode){
+void Graph::bridgeUtil(int u, bool visited[], int disc[],int low[], int parent[],std::map<int,int> &NodexNode,fstream &salida){
     static int time = 0;
     visited[u] = true;
     disc[u] = low[u] = ++time;
@@ -54,18 +51,19 @@ void Graph::bridgeUtil(int u, bool visited[], int disc[],
         if (!visited[v])
         {
             parent[v] = u;
-            bridgeUtil(v, visited, disc, low, parent,NodexNode);
+            bridgeUtil(v, visited, disc, low, parent,NodexNode,salida);
             low[u]  = min(low[u], low[v]);
             if (low[v] > disc[u]){
               int Node=NodexNode.at(u);
               int Node2=NodexNode.at(v);
-              cout << Node <<"-" << Node2 << endl;}
+              cout<<Node <<"-" << Node2 << endl;
+              salida<<Node <<"-" << Node2 << endl;}
         }
         else if (v != parent[u])
             low[u]  = min(low[u], disc[v]);
     }
 }
-void Graph::bridge(std::map<int,int> &NodexNode){
+void Graph::bridge(std::map<int,int> &NodexNode,fstream &salida){
     bool *visited = new bool[V];
     int *disc = new int[V];
     int *low = new int[V];
@@ -75,18 +73,22 @@ void Graph::bridge(std::map<int,int> &NodexNode){
         visited[i] = false;}
     for (int i = 0; i < V; i++)
         if (visited[i] == false)
-            bridgeUtil(i, visited, disc, low, parent,NodexNode);
+            bridgeUtil(i, visited, disc, low, parent,NodexNode,salida);
     delete[] visited;
     delete[] disc;
     delete[] low;
     delete[] parent;
 }
-int main()
-{
+int main(int argc, char const *argv[]){
     string Line;
     fstream newFile;
     int it=0;
-    newFile.open("Test.txt");
+    fstream salida;
+    salida.open("Salida.txt",fstream::out);
+    newFile.open(argv[1]);
+    if (!newFile.is_open()) {
+      cout<<"Error"<<endl;
+    }
     if (newFile.is_open()) {
       while (getline(newFile,Line)) {
         int nodos=stoi(Line);
@@ -120,10 +122,11 @@ int main()
           }
         }
         it=0;
-        g2.bridge(NodexNode2);
+        g2.bridge(NodexNode2,salida);
         g2.Deletet();
       }
     }
-
+    salida.close();
+    newFile.close();
     return 0;
 }
