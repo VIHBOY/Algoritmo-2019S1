@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -Wall -std=c++11
-TARGET = bin
+TARGET = bin/artpoints
 SRC = $(addprefix src/, Graph.cpp)
 
 all : $(SRC)
