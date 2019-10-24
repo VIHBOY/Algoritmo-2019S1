@@ -27,7 +27,7 @@ Graph::Graph(int V){
 void Graph::print(){
   for (int v = 1; v < this->V; ++v)
     {
-        cout << "\n Adjacency list of vertex "
+        cout << "\n Lista de vertices"
              << v << "\n head ";
         for (auto x : adj[v])
            cout << "-> " << x;
@@ -57,8 +57,8 @@ void Graph::bridgeUtil(int u, bool visited[], int disc[],int low[], int parent[]
               int Node=NodexNode.at(u);
               int Node2=NodexNode.at(v);
               existe = 0;
-              cout<<Node <<"-" << Node2 << endl;
-              salida<<Node <<"-" << Node2 << endl;}
+              cout<<Node <<"-" << Node2 <<"\n"<< endl;
+              salida<<Node <<"-" << Node2 <<"\n"<< endl;}
         }
         else if (v != parent[u])
             low[u]  = min(low[u], disc[v]);
@@ -77,8 +77,8 @@ void Graph::bridge(std::map<int,int> &NodexNode,fstream &salida){
         if (visited[i] == false)
             bridgeUtil(i, visited, disc, low, parent,NodexNode,salida, existe);
     if(existe){
-      cout<<"No Existe Corte"<<endl;
-      salida<<"No Existe Corte"<<endl;
+      cout<<"No Existe Corte\n"<<endl;
+      salida<<"No Existe Corte\n"<<endl;
     }
     delete[] visited;
     delete[] disc;
