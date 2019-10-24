@@ -12,7 +12,7 @@ using namespace std;
 class Graph{
     int V;
     list<int> *adj;
-    void bridgeUtil(int v, bool visited[], int disc[], int low[],int parent[],std::map<int,int> &NodexNode, fstream &salida);
+    void bridgeUtil(int v, bool visited[], int disc[], int low[],int parent[],std::map<int,int> &NodexNode, fstream &salida, int &existe);
 public:
     Graph(int V);
     void addEdge(int v, int w);
@@ -40,7 +40,7 @@ void Graph::addEdge(int v, int w){
 void Graph::Deletet(){
   delete[] this->adj;
 }
-void Graph::bridgeUtil(int u, bool visited[], int disc[],int low[], int parent[],std::map<int,int> &NodexNode,fstream &salida){
+void Graph::bridgeUtil(int u, bool visited[], int disc[],int low[], int parent[],std::map<int,int> &NodexNode,fstream &salida, int &existe){
     static int time = 0;
     visited[u] = true;
     disc[u] = low[u] = ++time;
@@ -51,11 +51,12 @@ void Graph::bridgeUtil(int u, bool visited[], int disc[],int low[], int parent[]
         if (!visited[v])
         {
             parent[v] = u;
-            bridgeUtil(v, visited, disc, low, parent,NodexNode,salida);
+            bridgeUtil(v, visited, disc, low, parent,NodexNode,salida, existe);
             low[u]  = min(low[u], low[v]);
             if (low[v] > disc[u]){
               int Node=NodexNode.at(u);
               int Node2=NodexNode.at(v);
+              existe = 0;
               cout<<Node <<"-" << Node2 << endl;
               salida<<Node <<"-" << Node2 << endl;}
         }
@@ -68,12 +69,17 @@ void Graph::bridge(std::map<int,int> &NodexNode,fstream &salida){
     int *disc = new int[V];
     int *low = new int[V];
     int *parent = new int[V];
+    int existe = 1;
     for (int i = 0; i < V; i++){
         parent[i] = NIL;
         visited[i] = false;}
     for (int i = 0; i < V; i++)
         if (visited[i] == false)
-            bridgeUtil(i, visited, disc, low, parent,NodexNode,salida);
+            bridgeUtil(i, visited, disc, low, parent,NodexNode,salida, existe);
+    if(existe){
+      cout<<"No Existe Corte"<<endl;
+      salida<<"No Existe Corte"<<endl;
+    }
     delete[] visited;
     delete[] disc;
     delete[] low;
